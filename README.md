@@ -149,7 +149,8 @@ Using ansible for deployment (todo)
 
 ### Asset Minification ###
 Starting the application in production mode will minify both CSS and JS components, as well as combining all the 
-various RequireJS modules into a singule file.
+various RequireJS modules into a singule file.  `/app/views/main.scala.html` shows how to include the appropriate 
+version by detecting if Play is in production mode or not.
 
 Todo
 -----------------
