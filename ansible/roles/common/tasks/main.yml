@@ -1,0 +1,9 @@
+---
+- name: update apt
+  apt: update_cache=yes
+
+- name: install packages
+  apt: pkg={{ item }} state=installed
+  with_items: 
+   - unzip
+   - vim

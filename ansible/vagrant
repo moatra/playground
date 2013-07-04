@@ -1,0 +1,6 @@
+[vagrant]
+127.0.0.1
+
+[webservers:children]
+vagrant
+

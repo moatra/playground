@@ -1,0 +1,33 @@
+---
+- name: ensure app_user user exists
+  user: name={{ app_user }} state=present
+
+- name: install git
+  apt: pkg=git state=installed
+
+- name: install jvm
+  apt: pkg=openjdk-7-jdk state=installed
+
+- name: download play2
+  get_url: url=http://downloads.typesafe.com/play/{{ play_version }}/play-{{ play_version }}.zip dest=/opt/play-{{ play_version }}.zip force=no
+
+- name: mark download as app_user's file
+  file: path=/opt/play-{{ play_version }}.zip owner={{ app_user }} group={{ app_user }}
+
+- name: extract play2
+  command: unzip -qo /opt/play-{{ play_version }}.zip -d /opt
+
+- name: play2 repository directory
+  file: path=/opt/play-{{ play_version }}/repository state=directory mode=0755 group={{ app_user }}
+
+- name: play2 sbt boot directory
+  file: path=/opt/play-{{ play_version }}/framework/sbt/boot state=directory mode=0755 group={{ app_user }}
+
+- name: give app_user permission to play2 dir
+  file: path=/opt/play-{{ play_version }} state=directory owner={{ app_user }} group={{ app_user }} recurse=yes
+
+- name: put play on the path
+  file: src=/opt/play-{{ play_version }}/play path=/usr/bin/play state=link owner={{ app_user }} group={{ app_user }}
+
+
+

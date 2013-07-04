@@ -1,0 +1,22 @@
+---
+- name: install nginx
+  apt: pkg=nginx state=present
+
+- name: configure nginx
+  template: src=play2bootstrap.j2 dest=/etc/nginx/sites-available/play2bootstrap
+  notify: 
+  - restart nginx
+
+- name: remove default vhost
+  file: path=/etc/nginx/sites-enabled/default state=absent
+  notify:
+  - restart nginx
+
+- name: ensure nginx running
+  service: name=nginx state=running enabled=yes
+
+- name: enable nginx vhost
+  file: src=/etc/nginx/sites-available/play2bootstrap path=/etc/nginx/sites-enabled/play2bootstrap state=link
+  notify:
+  - restart nginx
+

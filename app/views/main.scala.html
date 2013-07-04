@@ -1,0 +1,60 @@
+@(title: String)(content: Html)
+@import org.joda.time.DateTime
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>@title</title>
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+        @minCSS = @{if (play.Play.isProd()) ".min" else "" }
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/style" + minCSS + ".css")">
+        @minJS = @{if (play.Play.isProd()) "-min" else "" }
+        @helper.requireJs(core = routes.Assets.at("javascripts/require.js").url, module = routes.Assets.at("js" + minJS + "/main").url)
+    </head>
+    <body>
+        <div class="navbar navbar-static-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a href="/" class="brand">Play2 WebApp</a>
+                    <ul class="nav">
+                        <li class="active">
+                            <a href="/">Home</a>
+                        </li>
+                        <li>
+                            <a href="/docs"> Documentation </a>
+                        </li>
+                        <li>
+                            <a href="/tour">Tour</a>
+                        </li>
+                        <li>
+                            <a href="/about">About</a>
+                        </li>
+                    </ul>
+
+                    <ul class="nav pull-right ">
+                        <li>
+                            <a href="/register">
+                                <i class="icon-user"></i>
+                                Register
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/login">
+                                <i class="icon-lock "></i>
+                                Log In
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        @(content)
+        <div class="container footer">
+            <hr/>
+            <p class="muted">
+                &copy; Example, @{DateTime.now.year.get}
+            </p>
+        </div>
+    </body>
+</html>

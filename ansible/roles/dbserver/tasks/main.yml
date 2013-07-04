@@ -1,0 +1,17 @@
+---
+- name: ensure postgres packages are installed
+  apt: pkg={{ item }} state=installed
+  with_items:
+   - postgresql
+   - libpq-dev
+   - python-psycopg2
+
+- name: ensure database is present
+  postgresql_db: db={{ dbname }}
+  sudo: True
+  sudo_user: postgres
+
+- name: ensure user has access to database
+  postgresql_user: db={{ dbname }} user={{ dbuser }} password={{ dbpassword }} priv=ALL role_attr_flags=NOSUPERUSER,NOCREATEDB
+  sudo: True
+  sudo_user: postgres
