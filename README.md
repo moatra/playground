@@ -160,9 +160,9 @@ name of the AngularJS module.  This eliminates the need for "magic names" that a
 
 
 ### Application Configuration ###
-In a normal Play2! application, the configuration is stored in `./conf/application.conf`.  However, we use ansible to 
+In a normal Play2! application, the configuration is stored in `conf/application.conf`.  However, we use ansible to 
 create this file from a template.  _Do not_ modify the application.conf directly, as any changes you make will be lost.
-The correct way to alter the configuration is to update the template in `./ansible/templates/application.conf/j2`, then
+The correct way to alter the configuration is to update the template in `ansible/templates/application.conf.j2`, then
 reprovision vagrant (`vagrant provision`) from your host machine or execute `ansible-playbook ansible/site.yml -i 
 ansible/vagrant --tags "configuration"` from the application root on the Vagrant VM.
 
