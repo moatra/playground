@@ -1,0 +1,5 @@
+---
+- hosts: appservers
+  roles:
+   - common
+   - app

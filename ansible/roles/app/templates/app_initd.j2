@@ -1,0 +1,116 @@
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:			 {{ app_file }}
+# Required-Start: 	 $remote_fs $syslog $network
+# Required-Stop: 	 $remote_fs $syslog $network
+# Default-Start: 	 2 3 4 5
+# Default-Stop:		 0 1 6
+# Short-Description: Start {{ app_name }} at boot time
+# Description:		 Controls the {{app_name}} Play2! Framework standalone application
+### END INIT INFO
+
+USER={{ app_user }}
+APP_ROOT=/opt/{{app_file}}
+DESC="Play2! Framework standalone application"
+APP_NAME={{app_name}}
+START_SCRIPT="$APP_ROOT/start"
+START_ARGS="-Dconfig.file=/etc/{{ app_file }}.conf -DapplyEvolutions.default=true -Devolutions.use.locks=true"
+PIDFILE="$APP_ROOT/RUNNING_PID"
+NAME=java
+DAEMON="/usr/lib/jvm/java-7-openjdk-amd64/jre/bin/$NAME"
+SCRIPTNAME=/etc/init.d/{{app_file}}
+
+# Load the VERBOSE setting and other rcS variables
+. /lib/init/vars.sh
+
+# Define LSB log_* functions.
+# Depend on lsb-base (>= 3.2-14) to ensure that this file is present
+# and status_of_proc is working.
+. /lib/lsb/init-functions
+
+#
+# Function that starts the daemon/service
+#
+do_start()
+{
+        # Return
+        #   0 if daemon has been started
+        #   1 if daemon was already running
+        #   2 if daemon could not be started
+        start-stop-daemon --start --startas $START_SCRIPT --quiet --pidfile $PIDFILE --exec $DAEMON --chuid $USER --chdir $APP_ROOT --background --test > /dev/null \
+                || return 1
+        start-stop-daemon --start --startas $START_SCRIPT --quiet --pidfile $PIDFILE --exec $DAEMON --chuid $USER --chdir $APP_ROOT --background -- $START_ARGS \
+                || return 2
+}
+
+#
+# Function that stops the daemon/service
+#
+do_stop()
+{
+        # Return
+        #   0 if daemon has been stopped
+        #   1 if daemon was already stopped
+        #   2 if daemon could not be stopped
+        #   other if a failure occurred
+        start-stop-daemon --stop --quiet --retry=TERM/30/KILL/5 --pidfile $PIDFILE --name $NAME
+        RETVAL="$?"
+        [ "$RETVAL" = 2 ] && return 2
+
+        start-stop-daemon --stop --quiet --oknodo --retry=0/30/KILL/5 --exec $DAEMON
+        [ "$?" = 2 ] && return 2
+        # Many daemons don't delete their pidfiles when they exit.
+        rm -f $PIDFILE
+        return "$RETVAL"
+}
+
+case "$1" in
+  start)
+        [ "$VERBOSE" != no ] && log_daemon_msg "Starting $DESC" "$APP_NAME"
+        do_start
+        case "$?" in
+                0|1) [ "$VERBOSE" != no ] && log_end_msg 0 ;;
+                2) [ "$VERBOSE" != no ] && log_end_msg 1 ;;
+        esac
+        ;;
+  stop)
+        [ "$VERBOSE" != no ] && log_daemon_msg "Stopping $DESC" "$APP_NAME"
+        do_stop
+        case "$?" in
+                0|1) [ "$VERBOSE" != no ] && log_end_msg 0 ;;
+                2) [ "$VERBOSE" != no ] && log_end_msg 1 ;;
+        esac
+        ;;
+  status)
+       status_of_proc "$DAEMON" "$NAME" && exit 0 || exit $?
+       ;;
+  restart|force-reload)
+        #
+        # If the "reload" option is implemented then remove the
+        # 'force-reload' alias
+        log_daemon_msg "Restarting $DESC" "$APP_NAME"
+        do_stop
+        case "$?" in
+          0|1)
+                do_start
+                case "$?" in
+                        0) log_end_msg 0 ;;
+                        1) log_end_msg 1 ;; # Old process is still running
+                        *) log_end_msg 1 ;; # Failed to start
+                esac
+                ;;
+          *)
+                # Failed to stop
+                log_end_msg 1
+                ;;
+        esac
+        ;;
+  *)
+        #echo "Usage: $SCRIPTNAME {start|stop|restart|reload|force-reload}" >&2
+        echo "Usage: $SCRIPTNAME {start|stop|status|restart|force-reload}" >&2
+        exit 3
+         ;;
+esac
+
+:

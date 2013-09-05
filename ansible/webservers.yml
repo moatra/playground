@@ -1,8 +1,0 @@
----
-- hosts: webservers
-  roles: 
-   - common
-   - webserver
-   - dbserver
-   - { role: app, when: not debug}
-   - { role: app-debug, when: debug}

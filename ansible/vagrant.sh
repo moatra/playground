@@ -12,5 +12,5 @@ if [ ! -d "/etc/ansible" ]; then
 fi
 
 sudo cp /vagrant/ansible/vagrant /etc/ansible/hosts
-sudo chmod -x /etc/ansible/hosts  # wtf ansible/vagrant
+sudo chmod -x /etc/ansible/hosts  # ansible will try to execute it if it's marked executable; vagrant's shared folders on windows won't persist this change, hence the copy
 sudo ansible-playbook /vagrant/ansible/site.yml --connection=local

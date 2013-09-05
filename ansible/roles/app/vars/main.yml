@@ -1,0 +1,4 @@
+---
+app_file: "{{app_name.lower()}}"   # lower case version of the app name, should be safe for use in filenames
+app_name_version: "{{app_file}}-{{app_version}}"  # name of the app with the version number, should be safe for use in filenames
+app_user: "{{app_file}}"  # the user account that the app will run under

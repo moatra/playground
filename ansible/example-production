@@ -1,0 +1,13 @@
+[loadbalancers]
+192.168.1.100
+
+[dbservers]
+192.168.1.101
+
+[appservers]
+192.168.1.102
+
+[production:children]
+loadbalancers
+dbservers
+appservers

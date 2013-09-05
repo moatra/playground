@@ -1,0 +1,6 @@
+---
+connections: 768
+user: www-data
+worker_processes: $ansible_processor_count  # unfortunately, $ansible_processor_cores does not appear to reliably work ( https://github.com/ansible/ansible/issues/3325 )
+pid: /var/run/nginx.pid
+worker_connections: 768

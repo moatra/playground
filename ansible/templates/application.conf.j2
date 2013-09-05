@@ -5,11 +5,13 @@
 # ~~~~~
 # The secret key is used to secure cryptographics functions.
 # If you deploy your application to several instances be sure to use the same key!
-application.secret="y6FsHXB_b_ctR36`P?82Qu_Oh<1Aw0BZ@1U>9K?_vB?QtcWxLcCbpu:cexm@8XNm"
+application.secret="${app_secret}"
 
 # The application languages
 # ~~~~~
 application.langs="en"
+application.name="${app_name}"
+application.version="${app_version}"
 
 # Global object class
 # ~~~~~
@@ -28,18 +30,24 @@ application.langs="en"
 # Default to Routes in the root package (and conf/routes)
 # application.router=my.application.Routes
 
+# Assets caching
+# ~~~~~
+# Sets the default cache time for assets to one week
+assets.defaultCache="max-age=604800"
+
 # Database configuration
 # ~~~~~ 
 # You can declare as many datasources as you want.
 # By convention, the default datasource is named `default`
 #
 db.default.driver=org.postgresql.Driver
-db.default.url="jdbc:postgresql://localhost/play2bootstrap"
-db.default.user=play2bootstrap
-db.default.password=devpassword
+{% for host in groups['dbservers'] %}
+db.default.url="jdbc:postgresql://{{ hostvars[host]['ansible_eth0']['ipv4']['address'] }}/{{db_name}}"
+{% endfor %}
+db.default.user={{db_user}}
+db.default.password={{db_pass}}
 
 slick.default="models.*"
-
 
 # Evolutions
 # ~~~~~
@@ -59,3 +67,6 @@ logger.play=INFO
 # Logger provided to your application:
 logger.application=DEBUG
 
+{% if 'vagrant' in  group_names %}
+logger.scala.slick.session=DEBUG
+{% endif %}

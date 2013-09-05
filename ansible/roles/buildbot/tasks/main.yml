@@ -1,0 +1,31 @@
+---
+- name: install git
+  apt: pkg=git state=installed
+
+- name: install jvm
+  apt: pkg=openjdk-7-jdk state=installed
+
+- name: download play2
+  get_url: url=http://downloads.typesafe.com/play/{{ play_version }}/play-{{ play_version }}.zip dest=/opt/play-{{ play_version }}.zip force=no
+
+- name: extract play2
+  command: unzip -qo /opt/play-{{ play_version }}.zip -d /opt
+
+- name: play2 repository directory
+  file: path=/opt/play-{{ play_version }}/repository state=directory mode=0777
+
+- name: play2 sbt boot directory
+  file: path=/opt/play-{{ play_version }}/framework/sbt/boot state=directory mode=0777
+
+- name: put play on the path
+  file: src=/opt/play-{{ play_version }}/play path=/usr/bin/play state=link
+
+- name: generate application.conf for dev or tests
+  template: src=templates/application.conf.j2 dest=../conf/application.conf
+  tags:
+    - configuration
+
+- name: generate plugins.sbt
+  template: src=plugins.sbt.j2 dest=../project/plugins.sbt
+  tags:
+    - configuration

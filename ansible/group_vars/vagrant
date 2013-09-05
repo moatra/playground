@@ -1,3 +1,2 @@
 ---
-debug: true
-app_user: vagrant
+domain: localhost:8080

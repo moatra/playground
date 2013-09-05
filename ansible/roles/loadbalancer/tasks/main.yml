@@ -1,0 +1,19 @@
+---
+- name: prereqs for adding an apt repo
+  apt: pkg=python-software-properties state=installed
+
+  # Play2 needs nginx > 1.2 ( http://www.playframework.com/documentation/2.1.x/HTTPServer ), which is not in most
+  # Ubuntu repo's by default.  Hence, we add the nginx repo manually
+- name: add stable nginx repo
+  apt_repository: repo=ppa:nginx/stable
+
+- name: install nginx
+  apt: pkg=nginx state=present
+
+- name: configure nginx
+  template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
+  notify: 
+  - restart nginx
+
+- name: ensure nginx running
+  service: name=nginx state=running enabled=yes

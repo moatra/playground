@@ -1,0 +1,4 @@
+---
+- name: update initd install
+  command: update-rc.d {{ app_file }} defaults
+  sudo: true

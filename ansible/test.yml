@@ -1,6 +1,0 @@
----
-- hosts: lh
-
-  tasks:
-  - name: action echo cat
-    command: pwd

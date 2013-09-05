@@ -1,2 +1,5 @@
 ---
-- include: webservers.yml
+- include: loadbalancers.yml
+- include: dbservers.yml
+- include: appservers.yml
+- include: buildbots.yml

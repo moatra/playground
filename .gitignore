@@ -14,3 +14,5 @@ dist
 /RUNNING_PID
 /.settings
 /.vagrant
+project/plugins.sbt
+conf/application.conf
