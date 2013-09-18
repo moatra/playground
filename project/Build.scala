@@ -28,7 +28,7 @@ object ApplicationBuild extends Build {
   val localSettings = lintSettings ++ inConfig(Compile)(Seq(
     // jslint
     sourceDirectory in jslint <<= baseDirectory(_ / "app" / "assets" / "js"),
-    excludeFilter in jslint := "lib", // "generated" || "lib"
+    excludeFilter in jslint := "vendor", // "generated" || "lib"
     flags in jslint := Seq("nomen", "browser"),
     predefs in jslint := Seq("require", "define"),
     LintKeys.explode in (Compile, jslint) := true
@@ -47,7 +47,7 @@ object ApplicationBuild extends Build {
       requireJsShim += "shim.js",
       templatesImport += "models._",
       appJsDir <+= baseDirectory(_ / "app" / "assets" / "javascripts"),
-      appJsLibDir <+= baseDirectory(_ / "app" / "assets" / "javascripts" / "lib"),
+      appJsLibDir <+= baseDirectory(_ / "app" / "assets" / "javascripts" / "vendor"),
       jasmineTestDir <+= baseDirectory(_ / "test" / "js"),
       jasmineConfFile <+= baseDirectory(_ / "test" / "js" / "test.dependencies.js"),
       (compile in Test) <<= (compile in Test) dependsOn (jslint in Compile),

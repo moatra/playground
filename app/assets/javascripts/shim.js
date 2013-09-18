@@ -5,22 +5,22 @@ require.config({
         endFile: "blank.js"
     },
     paths: {
-        underscore: "lib/underscore",
-        angular: "lib/angular",
-        jquery: "lib/jquery-1.10.2",
-        "bs-affix": "lib/bootstrap/bootstrap-affix",
-        "bs-alert": "lib/bootstrap/bootstrap-alert",
-        "bs-button": "lib/bootstrap/bootstrap-button",
-        "bs-carousel": "lib/bootstrap/bootstrap-carousel",
-        "bs-collapse": "lib/bootstrap/bootstrap-collapse",
-        "bs-dropdown": "lib/bootstrap/bootstrap-dropdown",
-        "bs-modal": "lib/bootstrap/bootstrap-modal",
-        "bs-popover": "lib/bootstrap/bootstrap-popover",
-        "bs-scrollspy": "lib/bootstrap/bootstrap-scrollspy",
-        "bs-tab": "lib/bootstrap/bootstrap-tab",
-        "bs-tooltip": "lib/bootstrap/bootstrap-tooltip",
-        "bs-transition": "lib/bootstrap/bootstrap-transition",
-        "bs-typeahead": "lib/bootstrap/bootstrap-typeahead"
+        underscore: "vendor/underscore",
+        angular: "vendor/angular",
+        jquery: "vendor/jquery-1.10.2",
+        "bs-affix": "vendor/bootstrap/bootstrap-affix",
+        "bs-alert": "vendor/bootstrap/bootstrap-alert",
+        "bs-button": "vendor/bootstrap/bootstrap-button",
+        "bs-carousel": "vendor/bootstrap/bootstrap-carousel",
+        "bs-collapse": "vendor/bootstrap/bootstrap-collapse",
+        "bs-dropdown": "vendor/bootstrap/bootstrap-dropdown",
+        "bs-modal": "vendor/bootstrap/bootstrap-modal",
+        "bs-popover": "vendor/bootstrap/bootstrap-popover",
+        "bs-scrollspy": "vendor/bootstrap/bootstrap-scrollspy",
+        "bs-tab": "vendor/bootstrap/bootstrap-tab",
+        "bs-tooltip": "vendor/bootstrap/bootstrap-tooltip",
+        "bs-transition": "vendor/bootstrap/bootstrap-transition",
+        "bs-typeahead": "vendor/bootstrap/bootstrap-typeahead"
     },
     shim: {
         angular: {
