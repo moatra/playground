@@ -9,3 +9,6 @@ vagrant
 
 [buildbots:children]
 vagrant
+
+# empty, we don't want vagrant running in production mode
+[appservers]
