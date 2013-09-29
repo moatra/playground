@@ -7,6 +7,9 @@
 - name: add stable nginx repo
   apt_repository: repo=ppa:nginx/stable
 
+- name: update apt with latest nginx
+  apt: update_cache=yes
+
 - name: install nginx
   apt: pkg=nginx state=present
 
