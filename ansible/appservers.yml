@@ -1,4 +1,7 @@
 ---
+- hosts: dbservers
+  tasks:
+   - ping: #appservers need info for the dbserver, so we access it here gather the ip address
 - hosts: appservers
   roles:
    - common

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 if !(hash ansible-playbook 2>/dev/null); then 
 	sudo apt-get update
 	sudo apt-get install python-software-properties -y

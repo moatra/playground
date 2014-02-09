@@ -14,7 +14,7 @@ USER={{ app_user }}
 APP_ROOT=/opt/{{app_file}}
 DESC="Play2! Framework standalone application"
 APP_NAME={{app_name}}
-START_SCRIPT="$APP_ROOT/start"
+START_SCRIPT="$APP_ROOT/bin/{{ app_file }}"
 START_ARGS="-Dconfig.file=/etc/{{ app_file }}.conf -DapplyEvolutions.default=true -Devolutions.use.locks=true"
 PIDFILE="$APP_ROOT/RUNNING_PID"
 NAME=java

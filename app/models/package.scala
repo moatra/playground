@@ -1,3 +1,5 @@
+import scala.slick.driver.PostgresDriver.simple._
+
 package object models {
-  val Users = new UserTable()
+  def Tasks(implicit session: Session) = new TaskDao
 }

@@ -9,7 +9,7 @@
   template: src=templates/application.conf.j2 dest=/etc/{{app_file}}.conf 
 
 - name: copy application to remote
-  copy: src=../dist/{{app_name_version}}.zip dest=/tmp/{{app_name_version}}.zip force=no
+  copy: src=../target/universal/{{app_name_version}}.zip dest=/tmp/{{app_name_version}}.zip force=no
 
 - name: extract app
   command: unzip -qo /tmp/{{app_name_version}}.zip -d /tmp
@@ -18,7 +18,7 @@
   file: path=/tmp/{{app_name_version}} state=directory owner={{ app_user }} group={{ app_user }} recurse=yes
 
 - name: ensure start script is executable
-  file: path=/tmp/{{app_name_version}}/start state=file mode=0755
+  file: path=/tmp/{{app_name_version}}/bin/{{ app_file }} state=file mode=0755
 
   # the init.d file shouldn't be changing often, as it only depends on $app_name
 - name: create init.d file
@@ -32,7 +32,6 @@
 - name: stop app service
   service: name={{app_file}} state=stopped
 
-  # todo: make note in readme that the deployment folder should not be used for cross-deployment storage (use a different dir or external hosting)
 - name: clean up old deployment
   file: path=/opt/{{app_file}} state=absent
 

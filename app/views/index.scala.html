@@ -1,48 +1,46 @@
-@(message: String)
-
-@main("Welcome to Play 2.1") {
-<div class="container">
-    <div class="jumbotron">
-        <h1>Your App Is Ready</h1>
-        <p class="lead">
-            End to end application development with LESS, Boostrap, RequireJS, Jasmine Tests, JSLint,
-            AngularJS, Play2, Scala, Postgres, Slick, and more!
-        </p>
-        <a class="btn btn-large btn-success" href="https://github.com/moatra/playground">
-            Get started today
-        </a>
+@main("Welcome to PlayGround", 0) {
+    <div class="container">
+        <h1>Interactive Task List</h1>
+        <div ng-controller="taskList">
+            <table class="table">
+                <tr>
+                    <th></th>
+                    <th>Description</th>
+                    <th>Created</th>
+                    <th></th>
+                </tr>
+                <tr ng-repeat="task in tasks.items">
+                    <td>
+                        <input type="checkbox" ng-model="task.completed" ng-change="save(task)"/>
+                    </td>
+                    <td>
+                        <input type="text" ng-model="task.description" ng-change="save(task)"/>
+                    </td>
+                    <td>
+                        <span>{{task.created | timestamp:'l LT'}}</span>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger" ng-click="delete(task)">
+                            <i class="icon-remove"></i>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="checkbox" ng-model="newTask.completed" />
+                    </td>
+                    <td>
+                        <input type="text" ng-model="newTask.description" />
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                        <button class="btn btn-success" ng-click="create()">
+                            <i class="icon-upload"></i>
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
-    <div class="row">
-        <div class="span4">
-            <h2>Feature 1</h2>
-            <p>
-                Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-            </p>
-            <a href="/tour" class="btn">
-                Learn More
-                <i class="icon-double-angle-right"></i>
-            </a>
-        </div>
-        <div class="span4">
-            <h2>Feature 2</h2>
-            <p>
-                Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-            </p>
-            <a href="/tour" class="btn">
-                Learn More
-                <i class="icon-double-angle-right"></i>
-            </a>
-        </div>
-        <div class="span4">
-            <h2>Feature 3</h2>
-            <p>
-                Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
-            </p>
-            <a href="/tour" class="btn">
-                Learn More
-                <i class="icon-double-angle-right"></i>
-            </a>
-        </div>
-    </div>
-</div>
 }

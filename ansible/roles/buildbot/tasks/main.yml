@@ -5,6 +5,20 @@
 - name: install jvm
   apt: pkg=openjdk-7-jdk state=installed
 
+- name: add node repo
+  apt_repository: repo=ppa:chris-lea/node.js
+
+- name: install node
+  apt: update_cache=yes pkg=nodejs state=present
+
+- name: setup npm package
+  command: chdir={{repo_root}} npm install
+  sudo: yes
+
+- name: install grunt cli
+  command: npm install -g grunt-cli
+  sudo: yes
+
 - name: download play2
   get_url: url=http://downloads.typesafe.com/play/{{ play_version }}/play-{{ play_version }}.zip dest=/opt/play-{{ play_version }}.zip force=no
 
@@ -17,10 +31,16 @@
 - name: play2 sbt boot directory
   file: path=/opt/play-{{ play_version }}/framework/sbt/boot state=directory mode=0777
 
+- name: play is executable
+  file: mode=0777 path=/opt/play-{{ play_version }}/play
+
+- name: play.build is executable
+  file: mode=0777 path=/opt/play-{{ play_version }}/framework/build
+
 - name: put play on the path
   file: src=/opt/play-{{ play_version }}/play path=/usr/bin/play state=link
 
-- name: generate application.conf for dev or tests
+- name: generate application.conf for dev or specs
   template: src=templates/application.conf.j2 dest=../conf/application.conf
   tags:
     - configuration

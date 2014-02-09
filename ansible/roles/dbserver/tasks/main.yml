@@ -1,4 +1,13 @@
 ---
+- name: add postgres apt repo
+  apt_repository: repo="deb http://apt.postgresql.org/pub/repos/apt/ wheezy-pgdg main" state=present
+
+- name: import postgres repo key
+  apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc
+
+- name: update apt with latest postgres
+  apt: update_cache=yes
+
 - name: ensure postgres packages are installed
   apt: pkg={{ item }} state=installed
   with_items:
@@ -11,17 +20,16 @@
   sudo: yes
   sudo_user: postgres
 
-  # Ansible flips out if we try to use {{ db_name }} here.  I have no idea why the old ${db_name} syntax works, though
 - name: ensure user has access to database
-  postgresql_user: db=${db_name} user=${db_user} password=${db_pass} priv=ALL role_attr_flags=NOSUPERUSER,NOCREATEDB
+  postgresql_user: db={{db_name}} user={{db_user}} password={{db_pass}} priv=ALL role_attr_flags=NOSUPERUSER,NOCREATEDB
   sudo: yes
   sudo_user: postgres
 
 - name: set listen address
-  lineinfile: dest=/etc/postgresql/9.1/main/postgresql.conf state=present line="listen_addresses = '*'" insertbefore="^#listen_addresses" regexp="^listen_addresses"
+  lineinfile: dest=/etc/postgresql/9.3/main/postgresql.conf state=present line="listen_addresses = '*'" insertbefore="^#listen_addresses" regexp="^listen_addresses"
   notify: restart postgres
 
 - name: allow connections from appservers
-  template: src=pg_hba.conf.j2 dest=/etc/postgresql/9.1/main/pg_hba.conf owner=postgres group=postgres mode=0640
+  template: src=pg_hba.conf.j2 dest=/etc/postgresql/9.3/main/pg_hba.conf owner=postgres group=postgres mode=0640
   notify: restart postgres
 

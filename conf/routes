@@ -3,16 +3,21 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index
-GET     /docs                       controllers.Application.docs
-GET     /docs/*section              controllers.Application.section(section)
-GET     /tour                       controllers.Application.tour
-GET     /about                      controllers.Application.about
-GET     /register                   controllers.Application.register
-GET     /login                      controllers.Application.login
+GET           /                          controllers.Frontend.index
+GET           /data                      controllers.Frontend.data
+GET           /docs                      controllers.Frontend.documentation
+GET           /about                     controllers.Frontend.about
+GET           /register                  controllers.Frontend.register
+GET           /login                     controllers.Frontend.login
 
-GET     /api/foo                    controllers.api.FooApi.get
+GET           /api/task                  controllers.api.TaskApi.getList(page: Int ?= 0, size: Int ?= 10)
+GET           /api/task/_new             controllers.api.TaskApi.schema
+POST          /api/task/_new             controllers.api.TaskApi.create
+GET           /api/task/_count           controllers.api.TaskApi.count
+GET           /api/task/:id              controllers.api.TaskApi.get(id: Long)
+POST          /api/task/:id              controllers.api.TaskApi.update(id: Long)
+DELETE        /api/task/:id              controllers.api.TaskApi.delete(id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
-GET     /$file<robots\.txt>         controllers.Assets.at(path="/public", file)
+GET           /assets/*file              controllers.Assets.at(path="/public", file)
+GET           /$file<robots\.txt>        controllers.Assets.at(path="/public", file)

@@ -1,7 +1,7 @@
 PlayGround
 =====================================
 
-This projects is a starting foundation for using the following stack of technologies together:
+This projects is a starting foundation for developing, testing, and deploying an application using the following stack of technologies together:
 
 * [Vagrant](http://www.vagrantup.com/) (Virtual Machine management)
 * [Ansible](http://www.ansibleworks.com/docs/) (Machine configuration management)
@@ -9,16 +9,23 @@ This projects is a starting foundation for using the following stack of technolo
 * [Play2 - Scala](http://www.playframework.com/) (Web Framework)
 * [Slick](http://slick.typesafe.com/) (Database query/access library)
     + [play-slick](https://github.com/freekh/play-slick) (Play Framework integration plugin for Slick)
+* [Grunt](http://gruntjs.com/) (Javascript task runner)  Assists the Play framework with the following:
+    + Javascript linting
+    + Less compilation and minification
+    + Javascript compilation and minification
+    + Static image compression
+    + Live reloading
+    + Javascript test running
 * [RequireJS](http://requirejs.org/) (Modular JS development)
+    + [AlmondJS](https://github.com/jrburke/almond) (Shim loader for minifed requirejs files)
 * [AngularJS](http://angularjs.org/) (Front-end JS framework)
 * [Bootstrap](http://twitter.github.io/bootstrap/) (Front-end CSS framework)
     + [Font Awesome](http://fortawesome.github.io/Font-Awesome/) (Vector icon font, replaces and extends Bootstrap's
       Glyphicons)
-* [Jasmine](http://pivotal.github.io/jasmine/) (Behavior-based JS unit tests)
-    + [sbt-jasmine-plugin](https://github.com/guardian/sbt-jasmine-plugin) (Execute Jasmine unit tests as part of a SBT
-      build)
-* [JSLint](http://www.jslint.com/) (JS code quality enforcement)
-    + [sbt-jslint](https://github.com/philcali/sbt-jslint) (Execute JSLint checks as part of a SBT build)
+* [Mocha](http://visionmedia.github.io/mocha/) (Javascript unit framework)
+    + [ChaiJS](http://chaijs.com/) (Assertion library)
+    + [Karma](http://karma-runner.github.io/) (Unit test runner)
+    + [PhantomJS](http://phantomjs.org/) (Headless javascript test environment)
 
 
 Using PlayGround
@@ -48,7 +55,6 @@ of the source files. (`touch /vagrant/app/views/main.scala.html` should work)
 Before diving head first into writing your own web application, you'll want to rebrand it from `PlayGround` to 
 whatever you decide to name your project.  You'll want to look in the following files and update them appropriately:
 * /ansible/group_vars/all
-* /project/Build.Scala
 
 
 Programming With PlayGround
@@ -58,106 +64,34 @@ Programming With PlayGround
 ### Git Branching ###
 Refer to this post on [Git Branching strategy](http://nvie.com/posts/a-successful-git-branching-model/)
 
-### Databaes Models ###
-Putting your models into the `models.*` namespace, and the play-slick plugin will automatically generate your 
-evolutions for you.
-
-You may also wish to read up on how to [keep your tables and logic separated](https://github.com/freekh/play-slick/wiki/ScalaSlickTables).
+### Database Models ###
+You may wish to read up on how to [keep your tables and logic separated](https://github.com/freekh/play-slick/wiki/ScalaSlickTables).
 Ideally, your logic for querying the database should be separated from how you use the results.  Keeping all such 
 querying code in one location simplifies any refactoring process, and is generally more maintainable.
 
-####Package.scala####
-In `models` package object, we create `vals` for each table's class definition.  This is because of Slick's 
-documentation at http://slick.typesafe.com/doc/1.0.1/lifted-embedding.html#tables
-
-Since we're using `val`s with a separate class definition, there's an almost circular dependency in methods on the
-class definition that are using the `val` for accessing the table.  Normally this isn't a problem, but when developing you 
-should keep the following in mind:
-
-* When creating a new table, make sure to create and use the `val` in the package object. 
-* All references to the table's `val` inside of the table's class definition must be done inside of a `def` or 
-  `lazy val`. Otherwise, you're referencing the table's `val` before it has been initialized.
-
-####Traits.scala####
-`traits.scala` provides a barebones mixin called `IdCrud[T]` for providing basic CRUD capabilities to a model, where 
-`T` is the type of the `case class` the table represents. Unfortunately, since PostgreSQL doesn't allow `null` when 
-inserting primary keys, we can't use the normal `*` projection for inserting new rows and getting the created `id`.
-As such, you'll need to implement both `*` and `insert()` when using `IdCrud`.  See `models/user.scala` for an example.
-
 ###LESS is More###
-Play2 automatically handles recompiling your LESS files to css in dev mode when changes are detected.  No extra hassle 
-on your end required.
+While Play2 can handle LESS and JavaScript compilation, Grunt is much more flexible and capable in its range of abilities.
+Simple plugins at project/GruntWatch.scala and porject/GruntTask.scala allow easy integration with sbt.  This means
+executing `play run` will still live reload your less and javascript changes, and `play test` or `play stage` will still
+invoke Grunt as needed.
 
 ###RequireJS and Minification###
 The PlayGround repo offers one opinion on how to set up your javascript files so that the following criteria are all
 met:
 
-* A single "shim.js" file is used for RequireJS configuration across Dev, Test, and Production
+* A single "path.js" file is used for RequireJS path and shim configuration across Dev, Test, and Production
 * In dev (ie, non-production mode), the application serves the original, un-minified javascript and css files.
-* In production, the application serves a single concatenated, minified, and gzipped javascript file.
+* In production, the application serves a single concatenated, minified, and gzipped javascript file that has
+  the RequireJS functionality built in (ie, no need to use RequireJS to load your script in production)
 * In test, the normal paths and shim configs are usable without launching the entire javascript application
 
-####Shim.js####
-
-#####waitSeconds#####
-In the provided `shim.js`, `waitSeconds` is set because the default value is too short for the Rhino environment to 
-load and parse jQuery, resulting in a timeout error.  Unfortunately, due to a current bug in the Play2 build process,
-this error will not fail a build ( https://github.com/playframework/playframework/issues/1233 ).  If for some reason 
-your production environment appears to be serving unminified javascript, this error probably occurred and Play2 then
-defaulted back to the unminified files.
-
-#####wrap#####
-We use `wrap`'s `startFile` to include `shim.js` in the minified production version.  However, `r.js` will complain if 
-`startFile` is set without a matching `endFile`.  Unfortunately, we can't use startFile with `end: ""`, hence the 
-existence of `blank.js`.
-
 ### AngularJS and RequireJS Best Practice ###
-It is somewhat unfortunate that AngularJS and RequireJS both implement their own dependency managment system.  I 
+It is somewhat unfortunate that AngularJS and RequireJS both implement their own dependency management system.  I
 believe proper integration between the two is on the roadmap for future AngularJS revisions, but that still leaves the
 conundrum of how to handle it now.
 
 What I have found to be fairly effective is to have RequireJS modules create their own AngularJS module, and return the
-name of the AngularJS module.  This eliminates the need for "magic names" that appear across RequireJS modules. For example:
-
-    directive/integer.js:
-    ---------------------
-
-    define(['angular'], function (angular) {
-        "use strict";
-    
-        var INTEGER_REGEXP = /^\-?\d*$/,
-            moduleName = "directive-integer";
-        angular.module(moduleName, []).directive('integer', function () {
-        	// directive to cast an input's value to an integer
-            return {
-                require: 'ngModel',
-                link: function (scope, elm, attrs, ctrl) {
-                    ctrl.$parsers.unshift(function (viewValue) {
-                        if (INTEGER_REGEXP.test(viewValue)) {
-                            // it is valid
-                            ctrl.$setValidity('integer', true);
-                            return parseInt(viewValue, 10);
-                        }
-                        // it is invalid, return undefined (no model update)
-                        ctrl.$setValidity('integer', false);
-                        return null;
-                    });
-                }
-            };
-        });
-        return moduleName;
-    });
-
-    main.js:
-    --------
-
-    require(['angular', 'directive/integer'], function (angular, intDir) {
-        "use strict";
-
-        angular.module('myApp', [intDir]);
-        angular.boottrap(document, ['myApp']);
-    });
-
+name of the AngularJS module.  This eliminates the need for "magic names" that appear across RequireJS modules.
 
 ### Application Configuration ###
 In a normal Play2! application, the configuration is stored in `conf/application.conf`.  However, we use ansible to 
@@ -166,6 +100,11 @@ The correct way to alter the configuration is to update the template in `ansible
 reprovision vagrant (`vagrant provision`) from your host machine or execute `ansible-playbook ansible/site.yml -i 
 ansible/vagrant --tags "configuration"` from the application root on the Vagrant VM.
 
+###Package.json###
+Since npm and grunt are used only for frontend tasks, package.json has an unimportant name and version number.  Additionally,
+it lists "download" as a dependency.  Download is actually a dependency of another one of the required packages, but it
+was nested so deep it was causing file name length issues with Windows hosts.  Listing it as a top level dependency fixed
+the problem.
 
 Writing Unit Tests
 --------------------
@@ -193,10 +132,12 @@ Production Environments
 ------------------------
 To run in production mode, use `play start`.
 (Alternatively: see Play's documentation on starting in 
-[production mode](http://www.playframework.com/documentation/2.1.x/Production))
+[production mode](http://www.playframework.com/documentation/2.2.x/Production))
 
 ### Building and Deployment ###
-Using ansible for deployment (todo)
+Using ansible for deployment.  The `app` ansible role will install your app as a service in /etc/init.d.  It will
+also reuse the /opt/{{app-name}} directory across versions, so make sure any files you want to persist across version
+deploys are stored elsewhere.  (todo)
 
 Why don't we have the actual production or staging inventory files checked into source control?
 
@@ -209,7 +150,7 @@ Okay, but why is the `build` inventory file checked in?  Couldn't I change the b
   machine(s) you're using for building, as you are _already_ using them (This does imply a requirement that Ansible 
   is a requirement on each build slave).
 
-####Example Jenkins deployment#####
+####Example Jenkins build and deployment process#####
 Step 1: Update version number
 
     sed -i "s/-SNAPSHOT/.$BUILD_NUMBER/g" ansible/group_vars/all
@@ -246,10 +187,11 @@ Todo
   [ansyncrhonous drivers](http://reactivemongo.org/) and [MongoDB](http://www.mongodb.org/).
 * Investigate [LiquiBase](http://www.liquibase.org/) for managing database evolutions, instead of relying on
   applyEvoloutions.default=true in the init.d script for evolutions
-* Write up how to break javascript into multiple RequireJS modules
-* Split types for models to SavedInstance (with `id: Long` field) and NewInstance (with no `id` field)
+* Investigate Datomic/Datomisca for data modeling purposes
 * Investigate a smoother Jenkins master/slave and Ansible integration, so that Ansible is not a requirement on each
   build slave.
+* Try to port the javascript router to the static compilation
+* Round robin deploy with no downtime
 
 License
 -----------------

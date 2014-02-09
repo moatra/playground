@@ -1,0 +1,151 @@
+@main("API Documentation", 2) {
+    <div class="container">
+        <h1>Task REST API</h1>
+        <h3 id="structure">Task Structure</h3>
+        <p>
+            Task data is represented in a flat JSON structure, like so:
+    <pre>
+{
+    "id":          1234,
+    "completed":   false,
+    "description": "Task to be done",
+    "created":     1391906780950,
+    "priority":    0
+} </pre>
+        <dl>
+            <dt>id</dt>
+            <dd>
+                <code>Integer [Nullable]</code>
+                <p>
+                    The ID is the unique numerical ID associated with a specific task.  The ID will be automatically
+                    generated when the task is created.  A task will never be served with a <code>null</code> id
+                    value.
+                </p>
+            </dd>
+            <dt>completed</dt>
+            <dd>
+                <code>Boolean</code>
+                <p>
+                    Whether or not a task has been marked completed by the user.
+                </p>
+            </dd>
+            <dt>description</dt>
+            <dd>
+                <code>String [MaxLength=254]</code>
+                <p>
+                    The task that must be accomplished before the user should mark it as complete.
+                </p>
+            </dd>
+            <dt>created</dt>
+            <dd>
+                <code>Integer</code>
+                <p>
+                    The unix timestamp (in milliseconds) of when this task was created.  Any provided value is ignored when
+                    creating or updating a task.
+                </p>
+            </dd>
+            <dt>priority</dt>
+            <dd>
+                <code>Integer</code>
+                <p>
+                    (Unused)  This field is reserved for future use to indicate the relative priority with which the user
+                    intends to accomplish this task.
+                </p>
+            </dd>
+        </dl>
+        <h3 id="schema">Get Schema</h3>
+        <b>Definition</b>
+        <pre>GET   @controllers.api.routes.TaskApi.schema()</pre>
+        <b>Returns</b>
+        <pre>&lt;Task JSON&gt;</pre>
+        <p>
+            Returns a blank task with fields set to their default values.
+        </p>
+
+        <h3 id="create">Create Task</h3>
+        <b>Definition</b>
+        <pre>POST  @controllers.api.routes.TaskApi.create()
+{
+    "completed":       true,
+    "description":     "Finish API documentation",
+    "created":         0,
+    "priority":        0
+} </pre>
+        <b>Returns</b>
+        <pre>&lt;Task JSON&gt;</pre>
+        <p>
+            This request must be made as type <code>application/json</code>.
+        </p>
+        <p>
+            Creates a new task.  Will return a <code>201 CREATED</code> response with the <code>Location</code> header
+            set to the url needed to <a href="#get">GET</a> the new task.  The body will contain the Task JSON, updated
+            with the correct id and created values.
+        </p>
+
+        <h3>Get All Tasks</h3>
+        <b>Definition</b>
+        <pre>GET   @controllers.api.routes.TaskApi.getList(1, 20)</pre>
+        <b>Returns</b>
+        <pre>
+{
+    "items":    [
+        &lt;Task JSON&gt;,
+        &lt;Task JSON&gt;,
+        [...]
+        &lt;Task JSON&gt;,
+        &lt;Task JSON&gt;
+    ],
+    "total":    1234,
+    "size":     20,
+    "page":     1
+} </pre>
+        <p>
+            Returns a paginated list of all user tasks.  Size of the return list is controlled by the
+            <code>size</code> parameter, constrained to a minimum of 1 and a maximum of 50 with a default of 10.  The offset of the returned
+            list is controlled by the <code>page</code> parameter, constrained to a minimum of 0, and a maximum of
+            the total number of items divided by size, with a default of 0.
+        </p>
+        <p>
+            If the supplied values fall outside those ranges, the returned values will indicate the values used.
+        </p>
+
+        <h3 id="get">Get Task</h3>
+        <b>Definition</b>
+        <pre>GET   @controllers.api.routes.TaskApi.get(42)</pre>
+        <b>Returns</b>
+        <pre>&lt;Task JSON&gt;</pre>
+        <p>
+            Returns the Task with the id specified in the url.  Will return <code>404 Not Found</code>
+            if there is no task with a matching id.
+        </p>
+
+        <h3 id="update">Update Task</h3>
+        <b>Definition</b>
+        <pre>POST  @controllers.api.routes.TaskApi.get(42)
+{
+    "id":              42,
+    "completed":       true,
+    "description":     "Finish API documentation",
+    "created":         1391906780950,
+    "priority":        0
+} </pre>
+        <b>Returns</b>
+        <pre>&lt;Task JSON&gt;</pre>
+        <p>
+            This request must be made as type <code>application/json</code>.
+        </p>
+        <p>
+            Updates and returns the task with the id specified in the url.
+        </p>
+        <p>
+            Any altered values in the <code>id</code> or <code>created</code> fields will be ignored.
+        </p>
+
+        <h3 id="delete">Delete Task</h3>
+        <b>Definition</b>
+        <pre>DELETE @controllers.api.routes.TaskApi.delete(42)</pre>
+        <b>Returns</b>
+        <pre>N/A</pre>
+        <p>Deletes the task with the id specified in the url. Returns <code>204 NO CONTENT</code>.</p>
+    </div>
+}

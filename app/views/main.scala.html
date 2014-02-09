@@ -1,24 +1,28 @@
-@(title: String)(content: Html)
+@(title: String, tab: Int = -1)(content: Html)
 @import org.joda.time.DateTime
+@activeTab(current: Int)(tabContent: Html) = {
+    @if(current == tab) {
+        <li class="active">
+            @tabContent
+        </li>
+    } else {
+        <li>
+            @tabContent
+        </li>
+    }
+}
 <!DOCTYPE html>
 <html>
     <head>
         <title>@title</title>
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
-        @minCSS = @{if (play.Play.isProd()) ".min" else "" }
-        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/style" + minCSS + ".css")">
-         @if(!play.Play.isProd()) {
-            <!-- In debug mode, the shim config is not concat'd with main.js, and we aren't using 'data-main' which auto-sets baseUrl -->
-            <script type="text/javascript" src="@routes.Assets.at("javascripts/require.js")"></script>
-            <script type="text/javascript" src="@routes.Assets.at("javascripts/shim.js")"></script>
-            <script type="text/javascript">
-                require.config({
-                    baseUrl: "assets/javascripts/"
-                });
-            </script>
-            <script type="text/javascript" src="@routes.Assets.at("javascripts/main.js")"></script>
+        @if(!play.Play.isProd()) {
+            <!-- In debug mode, require.js individually loads the modules.  In production, the almond shim is included in main and handles require/define duties -->
+            <script type="text/javascript" src="@routes.Assets.at("javascripts/vendor/require.js")" data-main="@routes.Assets.at("javascripts/main.js")"></script>
+            <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/style.css")">
         } else {
-            @helper.requireJs(core = routes.Assets.at("javascripts/require.js").url, module = routes.Assets.at("javascripts/main").url)
+            <script type="text/javascript" src="@routes.Assets.at("javascripts/main.min.js")"></script>
+            <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/style.min.css")">
         }
     </head>
     <body>
@@ -27,18 +31,18 @@
                 <div class="container">
                     <a href="/" class="brand">Play2 WebApp</a>
                     <ul class="nav">
-                        <li class="active">
+                        @activeTab(0) {
                             <a href="/">Home</a>
-                        </li>
-                        <li>
+                        }
+                        @activeTab(1) {
+                            <a href="/data">Data</a>
+                        }
+                        @activeTab(2) {
                             <a href="/docs">Documentation</a>
-                        </li>
-                        <li>
-                            <a href="/tour">Tour</a>
-                        </li>
-                        <li>
+                        }
+                        @activeTab(3) {
                             <a href="/about">About</a>
-                        </li>
+                        }
                     </ul>
 
                     <ul class="nav pull-right ">

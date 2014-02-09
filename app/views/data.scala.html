@@ -1,0 +1,50 @@
+@main("Data Browser", 1) {
+    <div class="container">
+        <h1>Raw Data Browser</h1>
+        <div ng-controller="dataBrowser">
+            <table class="table">
+                <tr>
+                    <th>ID</th>
+                    <th>Completed</th>
+                    <th>Description</th>
+                    <th>Created</th>
+                    <th>Priority</th>
+                </tr>
+                <tr ng-repeat="task in tasks.items">
+                    <td>{{task.id}}</td>
+                    <td>{{task.completed}}</td>
+                    <td>{{task.description}}</td>
+                    <td>{{task.created}}</td>
+                    <td>{{task.priority}}</td>
+                </tr>
+            </table>
+            <ul class="pager">
+                <li class="previous" ng-class="{disabled: tasks.page <= 0}">
+                    <a href="#" ng-click="getPage(0)">
+                        <i class="icon-fast-backward"></i>
+                        First
+                    </a>
+                </li>
+                <li class="previous" ng-class="{disabled: tasks.page <= 0}">
+                    <a href="#" ng-click="getPage(tasks.page - 1)">
+                        <i class="icon-chevron-left"></i>
+                        Previous
+                    </a>
+                </li>
+                <li>{{firstItem}} to {{lastItem}} of {{tasks.total}} tasks</li>
+                <li class="next" ng-class="{disabled: tasks.page >= lastPage}">
+                    <a href="#" ng-click="getPage(lastPage)">
+                        Last
+                        <i class="icon-fast-forward"></i>
+                    </a>
+                </li>
+                <li class="next" ng-class="{disabled: tasks.page >= lastPage}">
+                    <a href="#" ng-click="getPage(tasks.page + 1)">
+                        Next
+                        <i class="icon-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+}

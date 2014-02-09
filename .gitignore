@@ -1,9 +1,11 @@
 logs
 project/project/target
+project/project
 project/target
 target
 tmp
 .history
+.cache
 dist
 /.idea
 /*.iml
@@ -16,3 +18,9 @@ dist
 /.vagrant
 project/plugins.sbt
 conf/application.conf
+node_modules
+public/**/*.gz
+public/*.gz
+public/images/
+public/javascripts/
+public/stylesheets/

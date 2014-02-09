@@ -1,13 +1,9 @@
 require.config({
-    waitSeconds: 30,
-    wrap: { // include this file in the appropriate modules in prod mode
-        startFile: "shim.js",
-        endFile: "blank.js"
-    },
     paths: {
         underscore: "vendor/underscore",
         angular: "vendor/angular",
-        jquery: "vendor/jquery-1.10.2",
+        jquery: "vendor/jquery-1.11.0",
+        moment: "vendor/moment.min",
         "bs-affix": "vendor/bootstrap/bootstrap-affix",
         "bs-alert": "vendor/bootstrap/bootstrap-alert",
         "bs-button": "vendor/bootstrap/bootstrap-button",
