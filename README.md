@@ -22,7 +22,7 @@ This projects is a starting foundation for developing, testing, and deploying an
 * [Bootstrap](http://twitter.github.io/bootstrap/) (Front-end CSS framework)
     + [Font Awesome](http://fortawesome.github.io/Font-Awesome/) (Vector icon font, replaces and extends Bootstrap's
       Glyphicons)
-* [Mocha](http://visionmedia.github.io/mocha/) (Javascript unit framework)
+* [Mocha](http://mochajs.org/) (Javascript unit framework)
     + [ChaiJS](http://chaijs.com/) (Assertion library)
     + [Karma](http://karma-runner.github.io/) (Unit test runner)
     + [PhantomJS](http://phantomjs.org/) (Headless javascript test environment)
@@ -116,7 +116,7 @@ You should definitely write unit tests for both your Scala and Javascript code.
 ### JavaScript Unit Tests ###
 To write JavaScript unit tests, add or modify a file in `/test/js/specs` that ends in `spec.js`.  These files will be
 pulled in via RequireJS in the test runner and executed.  The test runner uses a combination of 
-[Rhino](https://developer.mozilla.org/en-US/docs/Rhino), [Jasmine](http://pivotal.github.io/jasmine/), and 
+[Rhino](https://developer.mozilla.org/en-US/docs/Rhino), [Jasmine](https://jasmine.github.io/), and 
 [EnvJS](http://www.envjs.com/) to seamlessly execute your tests from the command line.
 
 To debug these unit tests, you can execute `sbt jasmine-gen-runner` or `play jasmine-gen-runner` to generate a html
